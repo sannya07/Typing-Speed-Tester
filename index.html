@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypingSpeed</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc); /* Vibrant gradient */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .wrapper {
+            background: #fff;
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+            font-size: 1.1rem;
+            border-radius: 15px;
+        }
+
+        .wrapper h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            border: 2px solid #2575fc;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            outline: none;
+            transition: 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #6a11cb;
+            box-shadow: 0 0 10px rgba(106, 17, 203, 0.5);
+        }
+
+        .content-box {
+            text-align: center;
+        }
+
+        .typingtest {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid #ddd;
+            overflow-y: auto;
+            max-height: 180px;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #444;
+            text-align: left;
+        }
+
+        .typingtest span.active {
+            color: #6a11cb;
+            text-decoration: underline;
+        }
+
+        .typingtest span.correct {
+            color: #4CAF50;
+        }
+
+        .typingtest span.incorrect {
+            color: #FF4040;
+        }
+
+        .result-details {
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding: 0;
+        }
+
+        .result-details li {
+            text-align: center;
+            flex: 1;
+        }
+
+        .result-details li:not(:last-child) {
+            margin-right: 1rem;
+        }
+
+        .result-details li p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+
+        .result-details li span {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        button {
+            background: #2575fc;
+            color: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #6a11cb;
+            transform: scale(1.05);
+        }
+
+        .active {
+            border-left: 2px solid #ccc;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { border-left-color: transparent; }
+        }
+
+        .message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            animation: fadeInOut 3s forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -20px); }
+            10% { opacity: 1; transform: translate(-50%, 0); }
+            90% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
+        }
+
+        /* Styling for Difficulty Level, Accuracy, and High Score */
+        .difficulty-select,
+        .accuracy p,
+        .highscore p {
+            margin: 1rem 0;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .difficulty-select {
+            padding: 0.8rem;
+            font-size: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            transition: 0.3s ease;
+        }
+
+        .difficulty-select:focus {
+            border-color: #6a11cb;
+            box-shadow: 0 0 5px rgba(106, 17, 203, 0.5);
+        }
+
+        .accuracy,
+        .highscore {
+            background-color: #f1f1f1;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid #ddd;
+            color: #333;
+            font-size: 1.1rem;
+            text-align: center;
+            border-color: #6a11cb;
+        }
+
+        .accuracy span,
+        .highscore span {
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: #2575fc;
+            
+        }
+
+        .accuracy {
+            margin-top: 1rem;
+        }
+
+        .highscore {
+            margin-top: 1rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 480px) {
+            .result-details {
+                flex-wrap: wrap;
+            }
+
+            .result-details li {
+                margin-bottom: 1rem;
+                flex: 0 0 45%;
+            }
+
+            .result-details li:not(:last-child) {
+                margin-right: 0;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h2>Check out how fast you can type!</h2>
+        <input type="text" class="input-field" placeholder="Start typing here...">
+        <div class="content-box">
+            <div class="typingtest">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quas amet quasi aut reiciendis molestiae quos. Dolore harum atque alias accusantium. Reprehenderit reiciendis quisquam quaerat nulla quasi possimus hic soluta!</p>
+            </div>
+            <div class="content">
+                <ul class="result-details">
+                    <li class="time">
+                        <p>Time Left:</p>
+                        <span><b>60</b>s</span>
+                    </li>
+                    <li class="mistake">
+                        <p>Mistakes:</p>
+                        <span>0</span>
+                    </li>
+                    <li class="wpm">
+                        <p>WPM:</p>
+                        <span>0</span>
+                    </li>
+                    <li class="cpm">
+                        <p>CPM:</p>
+                        <span>0</span>
+                    </li>
+                </ul>
+
+                <!-- Difficulty level dropdown -->
+                <select class="difficulty-select">
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+
+                <!-- Accuracy and High Score -->
+                <div class="accuracy">
+                    <p><b>Accuracy: <span>100%</span></b></p>
+                </div>
+
+                <div class="highscore">
+                    <p><b>High Score: <span>0</span> WPM</p></b></p>
+                </div>
+
+                <!-- Sound toggle and Try Again buttons -->
+                <button class="sound-toggle">🔊</button>
+                <button class="try-again">Try Again</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
